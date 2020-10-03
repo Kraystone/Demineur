@@ -1,1 +1,1 @@
-# Demineur
+# Demineur en JavaScript
