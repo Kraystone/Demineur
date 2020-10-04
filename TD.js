@@ -46,10 +46,12 @@ class Demineur {
             [0, 0, 0, 0, 0]
         ];
 
+        this.counter_mine = 0;
         for (let x = 0; x < 5; x++) {
             for (let y = 0; y < 5; y++) {
                 if (this.grid[y][x] === 'M') {
                     this.grid[y][x] = new Mine();
+                    this.counter_mine++;
                 } else {
                     this.grid[y][x] = new Nombre(this.grid[y][x]);
                 }
@@ -84,30 +86,29 @@ class Demineur {
     flag(y, x) {
         if (this.grid[y][x] instanceof Cellule && this.grid[y][x].visible === false) {
             this.grid[y][x].flag = true;
-            console.clear();
-            console.log('\nLa mine situé en X=' + x + ' et en Y=' + y + ' a été flag.');
         } else {
-            console.clear();
             console.log("Cette case n'a pas été flag.");
         }
         if (this.grid[y][x].visible === true) {
-            console.clear();
             console.log("Cette case a déja été flag.");
+        }
+        if (this.grid[y][x] instanceof Mine) {
+            console.log('\nLa mine situé en X=' + x + ' et en Y=' + y + ' a été flag.');
+            this.counter_mine = this.counter_mine - 1;
         }
     }
 
     clic(y, x, joueur) {
         if (this.grid[y][x] instanceof Mine) {
             joueur = joueur.enVie = false;
-            console.clear();
             console.log("Vous avez cliqué sur une mine, c'est perdue.");
-            return 0;
+            game();
         } else if (this.grid[y][x] instanceof Nombre) {
             this.grid[y][x].visible = true;
             console.log("Clic sur un nombre.");
             if (this.grid[y][x].value === 0) {
                 console.log("clic sur 0. v1");
-                for (x; x -1 < x + 1; x++) {
+                for (x; x - 1 < x + 1; x++) {
                     for (y; y - 1 < y + 1; y++) {
                         if (this.grid[y][x].value === 0) {
                             console.log("clic sur 0. v2");
@@ -133,8 +134,6 @@ function game() {
         let y = scanf('%d');
         console.log("Vous avez rentrez Y=" + y + ", il reste la position en X ? 0 ou 4")
         let x = scanf('%d');
-        //let x = x1 - 1;
-        //let y = y1 - 1;
         console.clear()
         switch (choix) {
             case choix = 1:
@@ -162,15 +161,16 @@ function game() {
                 }
             }
         }
-        if (bool === true) {
+        if (bool === true || demineur.counter_mine === 0) {
             console.clear();
             console.log("Vous avez gagnez !")
+            return 1;
         }
     }
     if (joueur.enVie === false) {
         for (let x = 0; x < 5; x++) {
             for (let y = 0; y < 5; y++) {
-                demineur.grid[y][x].visible = true;
+                demineur.grid[y][x].visible = false;
             }
         }
     }
@@ -179,7 +179,6 @@ function game() {
 }
 
 if (!game()) {
-    console.clear();
     console.log("Nouvelle partie !");
     game();
 }
