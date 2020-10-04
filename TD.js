@@ -1,11 +1,11 @@
 var scanf = require('scanf');
 
+
 /*
     flag ok
     clic manque recurcive 0
     win ok
     mort ok
-    il faut gagner pour quitter le jeux
  */
 
 class Personne {
@@ -46,34 +46,34 @@ class Demineur {
             [0, 0, 0, 0, 0]
         ];
 
-        this.counter_mine = 0;
+        this.nbr_mine = 0;
         for (let x = 0; x < 5; x++) {
             for (let y = 0; y < 5; y++) {
-                if (this.grid[y][x] === 'M') {
-                    this.grid[y][x] = new Mine();
-                    this.counter_mine++;
+                if (this.grid[x][y] === 'M') {
+                    this.grid[x][y] = new Mine();
+                    this.nbr_mine++;
                 } else {
-                    this.grid[y][x] = new Nombre(this.grid[y][x]);
+                    this.grid[x][y] = new Nombre(this.grid[x][y]);
                 }
             }
         }
     }
 
-    display() {
+    displax() {
         let chaine = "";
         for (let x = 0; x < 5; x++) {
             for (let y = 0; y < 5; y++) {
-                if (!this.grid[y][x].visible) {
-                    if (this.grid[y][x].flag) {
+                if (!this.grid[x][y].visible) {
+                    if (this.grid[x][y].flag) {
                         chaine += '►';
                     } else {
                         chaine += '■';
                     }
                 } else {
-                    if (this.grid[y][x] instanceof Mine) {
+                    if (this.grid[x][y] instanceof Mine) {
                         chaine += 'M';
-                    } else if (this.grid[y][x] instanceof Nombre) {
-                        chaine += this.grid[y][x].value;
+                    } else if (this.grid[x][y] instanceof Nombre) {
+                        chaine += this.grid[x][y].value;
                     }
                 }
                 chaine += ' ';
@@ -83,125 +83,119 @@ class Demineur {
         console.log(chaine);
     }
 
-    flag(y, x) {
-        if (this.grid[y][x] instanceof Cellule && this.grid[y][x].visible === false) {
-            this.grid[y][x].flag = true;
+    flag(x, y) {
+        if (this.grid[x][y] instanceof Cellule && this.grid[x][y].visible === false) {
+            this.grid[x][y].flag = true;
         } else {
             console.log("Cette case n'a pas été flag.");
         }
-        if (this.grid[y][x].visible === true) {
+        if (this.grid[x][y].visible === true) {
             console.log("Cette case a déja été flag.");
         }
-        if (this.grid[y][x] instanceof Mine) {
-            console.log('\nLa mine situé en X=' + x + ' et en Y=' + y + ' a été flag.');
-            this.counter_mine = this.counter_mine - 1;
+        if (this.grid[x][y] instanceof Mine) {
+            console.log('\nLa mine situé en y=' + y + ' et en x=' + x + ' a été flag.');
+            this.nbr_mine = this.nbr_mine - 1;
         }
     }
 
-    clic(y, x, joueur) {
-        if (this.grid[y][x] instanceof Nombre && this.grid[y][x].visible === false) {
-            this.grid[y][x].visible = true;
-            if (this.grid[y][x].value === 0) {
+    clic(x, y, joueur) {
+        if (this.grid[x][y] instanceof Nombre && this.grid[x][y].visible === false) {
+            this.grid[x][y].visible = true;
+            if (this.grid[x][y].value === 0) {
                 if (y === 0) {
                     if (x === 0) {
                         console.log("sup gauche");
-                        console.log(x, y);
-                        this.clic(y + 1, x);
-                        console.log(x, y + 1);
-                        this.clic(y, x + 1);
-                        console.log(x, y);
-                        this.clic(y + 1, x + 1);
-                        console.log(x, y);
-                    } else if (x === 4) {
+                        this.clic(x + 1, y);
+                        this.clic(x, y + 1);
+                        this.clic(x + 1, y + 1);
+                    } else if (y === 4) {
                         console.log("sup droit");
-                        this.clic(y - 1, x);
-                        this.clic(y, x - 1);
-                        this.clic(y - 1, x - 1);
+                        this.clic(x - 1, y);
+                        this.clic(x, y - 1);
+                        this.clic(x - 1, y - 1);
                     } else {
-                        console.log("bort haut");
-                        this.clic(y - 1, x);
-                        this.clic(y, x - 1);
-                        this.clic(y + 1, x + 1);
-                        this.clic(y + 1, x);
-                        this.clic(y, x + 1);
+                        console.log("bord haut");
+                        this.clic(x - 1, y);
+                        this.clic(x, y - 1);
+                        this.clic(x + 1, y + 1);
+                        this.clic(x + 1, y);
+                        this.clic(x, y + 1);
                     }
-                } else if (y === 4) {
-                    if (x === 0) {
+                } else if (x === 4) {
+                    if (y === 0) {
                         console.log("inf gauche");
-                        this.clic(y, x - 1);
-                        this.clic(y + 1, x - 1);
-                        this.clic(y - 1, x);
-                    } else if (x === 4) {
+                        this.clic(x, y - 1);
+                        this.clic(x + 1, y - 1);
+                        this.clic(x - 1, y);
+                    } else if (y === 4) {
                         console.log("inf droit");
-                        this.clic(y - 1, x);
-                        this.clic(y, x - 1);
-                        this.clic(y - 1, x - 1);
+                        this.clic(x - 1, y);
+                        this.clic(x, y - 1);
+                        this.clic(x - 1, y - 1);
                     } else {
                         console.log("bord inf");
-                        this.clic(y - 1, x);
-                        this.clic(y, x - 1);
-                        this.clic(y - 1, x - 1);
-                        this.clic(y + 1, x);
-                        this.clic(y, x + 1);
+                        this.clic(x - 1, y);
+                        this.clic(x, y - 1);
+                        this.clic(x - 1, y - 1);
+                        this.clic(x + 1, y);
+                        this.clic(x, y + 1);
                     }
                 }
             } else {
-                if (x === 0) {
-                    console.log("bord gauche");
-                    this.clic(y - 1, x);
-                    this.clic(y, x - 1);
-                    this.clic(y - 1, x + 1);
-                    this.clic(y + 1, x);
-                    this.clic(y, x + 1);
-                } else if (x === 4) {
-                    console.log("bord droit");
-                    this.clic(y - 1, x);
-                    this.clic(y, x - 1);
-                    this.clic(y - 1, x - 1);
-                    this.clic(y - 1, x + 1);
-                    this.clic(y, x + 1);
+                if (y === 0) {
+                    console.log("gauche inf");
+                    this.clic(x - 1, y);
+                    this.clic(x, y - 1);
+                    this.clic(x - 1, y + 1);
+                    this.clic(x + 1, y);
+                    this.clic(x, y + 1);
+                } else if (y === 4) {
+                    console.log("droit inf");
+                    this.clic(x - 1, y);
+                    this.clic(x, y - 1);
+                    this.clic(x - 1, y - 1);
+                    this.clic(x - 1, y + 1);
+                    this.clic(x, y + 1);
                 } else {
                     console.log("milieux");
-                    this.clic(y - 1, x);
-                    this.clic(y + 1, x);
-                    this.clic(y, x - 1);
-                    this.clic(y, x + 1);
-                    this.clic(y - 1, x - 1);
-                    this.clic(y + 1, x + 1);
-                    this.clic(y - 1, x + 1);
-                    this.clic(y + 1, x - 1);
+                    this.clic(x - 1, y);
+                    this.clic(x + 1, y);
+                    this.clic(x, y - 1);
+                    this.clic(x, y + 1);
+                    this.clic(x - 1, y - 1);
+                    this.clic(x + 1, y + 1);
+                    this.clic(x - 1, y + 1);
+                    this.clic(x + 1, y - 1);
 
                 }
             }
-        } else if (this.grid[y][x] instanceof Mine) {
+        } else if (this.grid[x][y] instanceof Mine) {
             joueur = joueur.enVie = false;
-            console.log("Vous avez cliqué sur une mine, c'est perdue.");
+            console.log("Vous avez cliqué sur une mine, c'est perdue.\nNouvelle partie.");
             game();
         }
     }
 }
-
-
 function game() {
     let demineur = new Demineur();
     let joueur = new Personne();
     let bool = false;
     while (joueur.enVie === true || bool === false) {
         console.log("DEMINEUR");
-        demineur.display();
+        demineur.displax();
         console.log("1 pour flag, 2 pour clic.");
-        let choix = scanf('%d');
-        console.log("Quel est le Y ? 0 ou 4")
-        let y = scanf('%d');
-        console.log("Vous avez rentrez Y=" + y + ", il reste la position en X ? 0 ou 4")
+        let choiy = scanf('%d');
+        console.log("Quel est le x ? 0 ou 4")
         let x = scanf('%d');
+        console.log("Vous avez rentrez x=" + x + ", il reste la position en y ? 0 ou 4")
+        let y = scanf('%d');
         console.clear()
-        switch (choix) {
-            case choix = 1:
-                demineur.flag(y, x);
+        switch (choiy) {
+            case choiy = 1:
+                demineur.flag(x, y);
                 break;
-            case choix = 2:
-                demineur.clic(y, x, joueur);
+            case choiy = 2:
+                demineur.clic(x, y, joueur);
                 break;
         }
         if (joueur.enVie !== false) {
@@ -209,11 +203,11 @@ function game() {
         }
 
         //parcours la grille pour verifier la victoire
-        for (x = 0; x < 5; x++) {
-            for (y = 0; y < 5; y++) {
-                if (demineur.grid[y][x] instanceof Nombre) {
+        for (y = 0; y < 5; y++) {
+            for (x = 0; x < 5; x++) {
+                if (demineur.grid[x][y] instanceof Nombre) {
                     if (bool === true) {
-                        if (demineur.grid[y][x].visible === true) {
+                        if (demineur.grid[x][y].visible === true) {
                             bool = true;
                         } else {
                             bool = false;
@@ -222,16 +216,17 @@ function game() {
                 }
             }
         }
-        if (bool === true || demineur.counter_mine === 0) {
+
+        if (bool === true || demineur.nbr_mine === 0) {
             console.clear();
-            console.log("Vous avez gagnez !")
+            console.log("Vous avez gagnez !");
             return 1;
         }
     }
     if (joueur.enVie === false) {
-        for (let x = 0; x < 5; x++) {
-            for (let y = 0; y < 5; y++) {
-                demineur.grid[y][x].visible = false;
+        for (let y = 0; y < 5; y++) {
+            for (let x = 0; x < 5; x++) {
+                demineur.grid[x][y].visible = true;
             }
         }
     }
@@ -239,7 +234,4 @@ function game() {
     return 0;
 }
 
-if (!game()) {
-    console.log("Nouvelle partie !");
-    game();
-}
+game();
