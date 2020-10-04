@@ -1,11 +1,11 @@
 var scanf = require('scanf');
 
-
 /*
     flag ok
     clic manque recurcive 0
     win ok
     mort ok
+    il faut gagner pour quitter le jeux
  */
 
 class Personne {
@@ -99,27 +99,88 @@ class Demineur {
     }
 
     clic(y, x, joueur) {
-        if (this.grid[y][x] instanceof Mine) {
+        if (this.grid[y][x] instanceof Nombre && this.grid[y][x].visible === false) {
+            this.grid[y][x].visible = true;
+            if (this.grid[y][x].value === 0) {
+                if (y === 0) {
+                    if (x === 0) {
+                        console.log("sup gauche");
+                        console.log(x, y);
+                        this.clic(y + 1, x);
+                        console.log(x, y + 1);
+                        this.clic(y, x + 1);
+                        console.log(x, y);
+                        this.clic(y + 1, x + 1);
+                        console.log(x, y);
+                    } else if (x === 4) {
+                        console.log("sup droit");
+                        this.clic(y - 1, x);
+                        this.clic(y, x - 1);
+                        this.clic(y - 1, x - 1);
+                    } else {
+                        console.log("bort haut");
+                        this.clic(y - 1, x);
+                        this.clic(y, x - 1);
+                        this.clic(y + 1, x + 1);
+                        this.clic(y + 1, x);
+                        this.clic(y, x + 1);
+                    }
+                } else if (y === 4) {
+                    if (x === 0) {
+                        console.log("inf gauche");
+                        this.clic(y, x - 1);
+                        this.clic(y + 1, x - 1);
+                        this.clic(y - 1, x);
+                    } else if (x === 4) {
+                        console.log("inf droit");
+                        this.clic(y - 1, x);
+                        this.clic(y, x - 1);
+                        this.clic(y - 1, x - 1);
+                    } else {
+                        console.log("bord inf");
+                        this.clic(y - 1, x);
+                        this.clic(y, x - 1);
+                        this.clic(y - 1, x - 1);
+                        this.clic(y + 1, x);
+                        this.clic(y, x + 1);
+                    }
+                }
+            } else {
+                if (x === 0) {
+                    console.log("bord gauche");
+                    this.clic(y - 1, x);
+                    this.clic(y, x - 1);
+                    this.clic(y - 1, x + 1);
+                    this.clic(y + 1, x);
+                    this.clic(y, x + 1);
+                } else if (x === 4) {
+                    console.log("bord droit");
+                    this.clic(y - 1, x);
+                    this.clic(y, x - 1);
+                    this.clic(y - 1, x - 1);
+                    this.clic(y - 1, x + 1);
+                    this.clic(y, x + 1);
+                } else {
+                    console.log("milieux");
+                    this.clic(y - 1, x);
+                    this.clic(y + 1, x);
+                    this.clic(y, x - 1);
+                    this.clic(y, x + 1);
+                    this.clic(y - 1, x - 1);
+                    this.clic(y + 1, x + 1);
+                    this.clic(y - 1, x + 1);
+                    this.clic(y + 1, x - 1);
+
+                }
+            }
+        } else if (this.grid[y][x] instanceof Mine) {
             joueur = joueur.enVie = false;
             console.log("Vous avez cliqué sur une mine, c'est perdue.");
             game();
-        } else if (this.grid[y][x] instanceof Nombre) {
-            this.grid[y][x].visible = true;
-            console.log("Clic sur un nombre.");
-            if (this.grid[y][x].value === 0) {
-                console.log("clic sur 0. v1");
-                for (x; x - 1 < x + 1; x++) {
-                    for (y; y - 1 < y + 1; y++) {
-                        if (this.grid[y][x].value === 0) {
-                            console.log("clic sur 0. v2");
-                            //this.clic(y, x);
-                        }
-                    }
-                }
-            }
         }
     }
 }
+
 
 function game() {
     let demineur = new Demineur();
